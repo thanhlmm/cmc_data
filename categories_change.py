@@ -14,7 +14,7 @@ schedule = IntervalSchedule(
 
 @task(max_retries=3, retry_delay=timedelta(seconds=10))
 def extractCMCTopDEX():
-    url = "https://api.coinmarketcap.com/data-api/v3/exchange/listing?exType=3&sort=volume_24h"
+    url = "https://api.coinmarketcap.com/data-api/v3/sector/w/list?sortBy=avg_price_change&sortType=desc"
     response = requests.request("GET", url)
     if (response.status_code != 200):
         raise Exception("Error while query DEX data on CMC")
@@ -24,13 +24,13 @@ def extractCMCTopDEX():
 
 @task
 def transformCMCData(data):
-    return data["data"]["exchanges"]
+    return data["data"]
 
 
 @task(max_retries=3, retry_delay=timedelta(seconds=10))
 def loadPostgres(data):
     # Load data to posgres
-    url = "https://hasura.n8n.cuthanh.com/api/rest/cmc_dex"
+    url = "https://hasura.n8n.cuthanh.com/api/rest/cmc_categories"
     body = {
         "input": {
             "timestamp": time.time(),
@@ -46,7 +46,7 @@ def loadPostgres(data):
     return
 
 
-with Flow("Crawl-TOP_DEX", schedule=schedule) as flow:
+with Flow("Crawl-CATEGORIES_CHANGE", schedule=schedule) as flow:
     data = extractCMCTopDEX()
     tranformData = transformCMCData(data)
     loadPostgres(tranformData)
