@@ -51,10 +51,10 @@ with Flow("Crawl-CATEGORIES_CHANGE", schedule=schedule) as flow:
     tranformData = transformCMCData(data)
     loadPostgres(tranformData)
 
-flow.storage = GitHub(
-    repo="thanhlmm/cmc_data",
-    path="/top_dex.py",
-    ref="main")
+# flow.storage = GitHub(
+#     repo="thanhlmm/cmc_data",
+#     path="/top_dex.py",
+#     ref="main")
 
-# flow.run()
-flow.register(project_name="cmc", labels=['n8n.cuthanh.com'])
+flow.run()
+# flow.register(project_name="cmc", labels=['n8n.cuthanh.com'])

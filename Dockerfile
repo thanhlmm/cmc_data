@@ -6,4 +6,4 @@ RUN pip install -r requirements.txt
 
 ADD . .
 
-CMD python top_dex.py
+ENTRYPOINT [ "python" ]
