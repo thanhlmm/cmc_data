@@ -9,34 +9,31 @@ on:
     - cron: "0,30 * * * *"
 
 env:
-  IMAGE_NAME: cmc-data
+  DBT_PROFILES_DIR: ./dbt
+  DBT_POSTGRES_HOSTNAME: ${{secrets.DBT_POSTGRES_HOSTNAME}}
+  DBT_POSTGRES_USER: ${{secrets.DBT_POSTGRES_USER}}
+  DBT_POSTGRES_PASSWORD: ${{secrets.DBT_POSTGRES_PASSWORD}}
+  DBT_POSTGRES_PORT: ${{secrets.DBT_POSTGRES_PORT}}
+  DBT_POSTGRES_DBNAME: ${{secrets.DBT_POSTGRES_DBNAME}}
 
 jobs:
-  build:
+  dbt:
+    name: dbt
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./dbt
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Build the Docker image
-        working-directory: ./prefect
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
-      - name:
-          Log in to registry
-          # This is where you will update the PAT to GITHUB_TOKEN
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-      - name: Push image
-        run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
-
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          # Use Docker `latest` tag convention
-          [ "$VERSION" == "master" ] && VERSION=latest
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@v1
+        with:
+          python-version: "3.7.x"
+      - run: pip3 install dbt
+      - run: dbt --version
+      - run: 'echo "$KEYFILE" > ./profiles.yml'
+        shell: bash
+        env:
+          KEYFILE: profiles_tmp.yml
+      - run: dbt run
+      - run: dbt test
