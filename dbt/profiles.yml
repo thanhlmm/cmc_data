@@ -6,7 +6,7 @@ hasura:
       host: "{{ env_var('DBT_POSTGRES_HOSTNAME') }}"
       user: "{{ env_var('DBT_POSTGRES_USER') }}"
       password: "{{ env_var('DBT_POSTGRES_PASSWORD') }}"
-      port: "{{ env_var('DBT_POSTGRES_PORT') }}"
+      port: 5433
       dbname: "{{ env_var('DBT_POSTGRES_DBNAME') }}"
       schema: public
       threads: 2
