@@ -35,5 +35,6 @@ jobs:
         shell: bash
         env:
           KEYFILE: profiles_tmp.yml
-      - run: dbt run
+      - run: cat ./profiles.yml
+      - run: dbt run --
       - run: dbt test
