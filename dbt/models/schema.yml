@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: sectors
+    description: "Sector data"
+    columns:
+      - name: timestamp
+        description: "Timestamp data"
+        tests:
+          - not_null
