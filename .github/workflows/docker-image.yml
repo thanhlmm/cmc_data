@@ -3,8 +3,12 @@ name: Docker Image CI
 on:
   push:
     branches: [main]
+    paths:
+      - "prefect/**"
   pull_request:
     branches: [main]
+    paths:
+      - "prefect/**"
 
 env:
   IMAGE_NAME: cmc-data
@@ -16,6 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build the Docker image
+        working-directory: ./prefect
         run: docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
       - name:
           Log in to registry
