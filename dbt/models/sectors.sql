@@ -7,7 +7,7 @@ WITH raw_data AS (
   FROM
     cmc_categories)
   SELECT
-    to_timestamp(raw_data."timestamp"),
+    to_timestamp(raw_data."timestamp") AS "timestamp",
     raw_data.json_row ->> 'title' AS NAME,
     CAST (
       raw_data.json_row ->> 'marketCap' AS DOUBLE PRECISION
