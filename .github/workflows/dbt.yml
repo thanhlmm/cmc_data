@@ -31,10 +31,5 @@ jobs:
           python-version: "3.7.x"
       - run: pip3 install dbt
       - run: dbt --version
-      # - run: 'echo "$KEYFILE" > ./profiles.yml'
-      #   shell: bash
-      #   env:
-      #     KEYFILE: profiles_tmp.yml
-      # - run: cat ./profiles.yml
       - run: dbt run --profiles-dir .
-      - run: dbt test
+      # - run: dbt test
