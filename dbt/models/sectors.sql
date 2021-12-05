@@ -14,6 +14,8 @@ WITH raw_data AS (
     ) AS marketCap,
     CAST (
       raw_data.json_row ->> 'marketVolume' AS DOUBLE PRECISION
-    ) AS marketVolume
+    ) AS marketVolume,
+    {{ ref('sector_tag') }}.tag
   FROM
     raw_data
+  LEFT JOIN {{ ref('sector_tag') }} ON raw_data.json_row ->> 'title' = {{ ref('sector_tag') }}.Sector

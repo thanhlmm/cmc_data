@@ -1,0 +1,10 @@
+# Standard dbt Exclusions
+target
+dbt_modules/
+logs/
+# Junk hidden files
+**/.DS_Store
+# .user.yml is a reporting UUID for anonymous dbt usage
+profiles/.user.yml
+# Don't store environment variables.
+.env
