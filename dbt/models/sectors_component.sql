@@ -1,4 +1,4 @@
-{% set sector_components = ["Lending & Borrowing","Web3","DeFi Index","Identity","Oracles","Yearn Partnerships","Derivatives","Asset Management","DeFi 2.0","Memes","Play To Earn","Yield Aggregator","Yield Farming","Stablecoin","Fan Token","Wrapped Tokens","DAO","AMM","Jobs","Filesharing","Protocol-Owned Liquidity","Interoperability","Synthetics","Tokenized Stock","Metaverse"] %}
+{% set sector_components = ["Lending & Borrowing","Web3","DeFi Index","Identity","Oracles","Yearn Partnerships","Derivatives","Asset Management","DeFi 2.0","Memes","Play To Earn","Yield Aggregator","Yield Farming","Stablecoin","Fan Token","Wrapped Tokens","DAO","AMM","Filesharing","Protocol-Owned Liquidity","Interoperability","Synthetics","Tokenized Stock","Metaverse"] %}
 
 SELECT
   timestamp,
