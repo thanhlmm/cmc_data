@@ -1,21 +1,25 @@
-WITH raw_data AS (
+WITH
+  rawdata AS (
   SELECT
-    ROUND(
-      cmc_categories."timestamp"
-    ) AS "timestamp",
-    CAST(json_array_elements(DATA) AS json) AS json_row
+    ARRAY(
+    SELECT
+      x
+    FROM
+      UNNEST(JSON_EXTRACT_ARRAY(DATA,
+          "$")) x ) data_row,
+    _timestamp AS `timestamp`
   FROM
-    cmc_categories)
-  SELECT
-    to_timestamp(raw_data."timestamp") AS "timestamp",
-    raw_data.json_row ->> 'title' AS NAME,
-    CAST (
-      raw_data.json_row ->> 'marketCap' AS DOUBLE PRECISION
-    ) AS marketCap,
-    CAST (
-      raw_data.json_row ->> 'marketVolume' AS DOUBLE PRECISION
-    ) AS marketVolume,
-    {{ ref('sector_tag') }}.tag
-  FROM
-    raw_data
-  LEFT JOIN {{ ref('sector_tag') }} ON raw_data.json_row ->> 'title' = {{ ref('sector_tag') }}.Sector
+    `default`.`categories_change` )
+SELECT
+  timestamp,
+  JSON_VALUE(data_row,
+    '$.title') AS name,
+  CAST(JSON_VALUE(data_row,
+    '$.marketCap') as NUMERIC) AS marketCap,
+  CAST(JSON_VALUE(data_row,
+    '$.marketVolume') as NUMERIC) AS marketVolume,
+    sector_tag.tag AS tag
+FROM
+  rawdata,
+  rawdata.data_row
+LEFT JOIN {{ ref('sector_tag') }} ON JSON_VALUE(data_row, '$.title') = sector_tag.Sector
