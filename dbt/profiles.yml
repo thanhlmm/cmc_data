@@ -1,15 +1,9 @@
-hasura:
+bigquery:
   target: prod
   outputs:
     prod:
-      type: postgres
-      host: "{{ env_var('DBT_POSTGRES_HOSTNAME') }}"
-      user: "{{ env_var('DBT_POSTGRES_USER') }}"
-      password: "{{ env_var('DBT_POSTGRES_PASSWORD') }}"
-      port: 5433
-      dbname: "{{ env_var('DBT_POSTGRES_DBNAME') }}"
-      schema: public
+      type: bigquery
+      keyfile: "{{ env_var('DBT_GOOGLE_BIGQUERY_KEYFILE') }}"
+      project: "{{ env_var('DBT_GOOGLE_PROJECT') }}"
+      dataset: "{{ env_var('DBT_GOOGLE_BIGQUERY_DATASET') }}"
       threads: 2
-      keepalives_idle: 0 # default 0, indicating the system default
-      connect_timeout: 10 # default 10 seconds
-      search_path: "public"

@@ -10,11 +10,9 @@ on:
 
 env:
   DBT_PROFILES_DIR: ./dbt
-  DBT_POSTGRES_HOSTNAME: ${{secrets.DBT_POSTGRES_HOSTNAME}}
-  DBT_POSTGRES_USER: ${{secrets.DBT_POSTGRES_USER}}
-  DBT_POSTGRES_PASSWORD: ${{secrets.DBT_POSTGRES_PASSWORD}}
-  DBT_POSTGRES_PORT: ${{secrets.DBT_POSTGRES_PORT}}
-  DBT_POSTGRES_DBNAME: ${{secrets.DBT_POSTGRES_DBNAME}}
+  DBT_GOOGLE_PROJECT: reflection-323614
+  DBT_GOOGLE_BIGQUERY_DATASET: default
+  DBT_GOOGLE_BIGQUERY_KEYFILE: ./.gcloud/dbt-service-account.json
 
 jobs:
   dbt:
@@ -29,7 +27,11 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: "3.7.x"
-      - run: pip3 install dbt-core dbt-postgres
+      - run: pip3 install dbt-core dbt-bigquery
       - run: dbt --version
+      - run: 'echo "$KEYFILE" > ./.gcloud/dbt-service-account.json'
+        shell: bash
+        env:
+          KEYFILE: ${{secrets.DBT_GOOGLE_BIGQUERY_KEYFILE}}
       - run: dbt run --profiles-dir .
       # - run: dbt test
