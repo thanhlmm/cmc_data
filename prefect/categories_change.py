@@ -28,18 +28,16 @@ def transformCMCData(data):
 
 
 @task(max_retries=3, retry_delay=timedelta(seconds=10))
-def loadPostgres(data):
+def loadJitsu(data):
     # Load data to posgres
-    url = "https://hasura.n8n.cuthanh.com/api/rest/cmc_categories"
+    url = "https://jitsu.thanhle.blog/api/v1/s2s/event"
     body = {
-        "input": {
-            "timestamp": time.time(),
-            "data": data
-        }
+        "data": data,
+        "table": "categories_change"
     }
 
     response = requests.request(
-        "POST", url, headers={"x-hasura-admin-secret": "myadminsecretkey", "Content-Type": "'application/json"}, json=body)
+        "POST", url, headers={"X-Auth-Token": "s2s.euvzy95jhm8wnhp33dito.dlvjh8ju8a6gtuar0u6aia", "Content-Type": "'application/json"}, json=body)
 
     if (response.status_code != 200):
         raise Exception("Error while load data")
@@ -49,7 +47,7 @@ def loadPostgres(data):
 with Flow("Crawl-CATEGORIES_CHANGE", schedule=schedule) as flow:
     data = extractCMCTopDEX()
     tranformData = transformCMCData(data)
-    loadPostgres(tranformData)
+    loadJitsu(tranformData)
 
 # flow.storage = GitHub(
 #     repo="thanhlmm/cmc_data",
