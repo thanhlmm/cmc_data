@@ -29,6 +29,7 @@ jobs:
           python-version: "3.7.x"
       - run: pip3 install dbt-core dbt-bigquery
       - run: dbt --version
+      - run: mkdir ./.gcloud/
       - run: 'echo "$KEYFILE" > ./.gcloud/dbt-service-account.json'
         shell: bash
         env:
