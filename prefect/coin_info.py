@@ -1,3 +1,4 @@
+import json
 import prefect
 from prefect import task, Flow
 import requests
@@ -37,19 +38,22 @@ def extractCoinInfo():
 def loadJitsu(data):
     # Load data to jitsu
     # TODO: Make this builk api
-    url = "https://jitsu.thanhle.blog/api/v1/s2s/event"
+    url = "https://jitsu.thanhle.blog/api/v1/events/bulk"
 
+    rawData = ""
     for row in data:
         body = {
             "data": row,
             "table": "coin_info"
         }
-        response = requests.request(
-            "POST", url, headers={"X-Auth-Token": "s2s.euvzy95jhm8wnhp33dito.dlvjh8ju8a6gtuar0u6aia", "Content-Type": "'application/json"}, json=body)
+        rawData = rawData + json.dumps(body) + "\n"
 
-        print("Done load row")
-        if (response.status_code != 200):
-            raise Exception("Error while load data")
+    files = {'file': ('report.csv', rawData)}
+    response = requests.request(
+        "POST", url, headers={"X-Auth-Token": "s2s.euvzy95jhm8wnhp33dito.dlvjh8ju8a6gtuar0u6aia"}, files=files)
+
+    if (response.status_code != 200):
+        raise Exception("Error while load data")
     return
 
 
