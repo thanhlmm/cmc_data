@@ -52,6 +52,7 @@ def loadJitsu(data):
     response = requests.request(
         "POST", url, headers={"X-Auth-Token": "s2s.euvzy95jhm8wnhp33dito.dlvjh8ju8a6gtuar0u6aia"}, files=files)
 
+    print(response.json())
     if (response.status_code != 200):
         raise Exception("Error while load data")
     return
