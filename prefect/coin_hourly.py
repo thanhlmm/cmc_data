@@ -37,7 +37,7 @@ def extractCoinInfo():
 @task(max_retries=3, retry_delay=timedelta(seconds=10))
 def loadJitsu(data):
     # Load data to jitsu
-    url = "https://jitsu.thanhle.blog/api/v1/events/bulk"
+    url = "http://n8n.cuthanh.com:8088/api/v1/events/bulk"
 
     rawData = ""
     for row in data:
@@ -49,7 +49,7 @@ def loadJitsu(data):
 
     files = {'file': ('report.csv', rawData)}
     response = requests.request(
-        "POST", url, headers={"X-Auth-Token": "s2s.euvzy95jhm8wnhp33dito.dlvjh8ju8a6gtuar0u6aia"}, files=files)
+        "POST", url, headers={"X-Auth-Token": "s2s.9n9htsciluk9ouvvh97n2q.bz5h9xodjdl25ajx6bise6"}, files=files)
 
     print(response.json())
     if (response.status_code != 200):
