@@ -5,7 +5,6 @@ import requests
 import time
 from datetime import timedelta, datetime
 from prefect.schedules import IntervalSchedule
-from prefect.storage.github import GitHub
 
 schedule = IntervalSchedule(
     start_date=datetime.utcnow() + timedelta(seconds=1),
@@ -29,7 +28,8 @@ def extractCoinInfo():
         if (len(responseData["data"]) == 0):
             break
 
-        coin_infos.extend(responseData["data"])
+        coin_infos.append(responseData["data"])
+        # coin_infos.extend(responseData["data"])
 
     return coin_infos
 
@@ -39,21 +39,22 @@ def loadJitsu(data):
     # Load data to jitsu
     url = "http://n8n.cuthanh.com:8088/api/v1/events/bulk"
 
-    rawData = ""
-    for row in data:
-        body = {
-            "data": row,
-            "table": "coin_hourly"
-        }
-        rawData = rawData + json.dumps(body) + "\n"
+    for page in data:
+        rawData = ""
+        for row in page:
+            body = {
+                "data": row,
+                "table": "coin_hourly_pages"
+            }
+            rawData = rawData + json.dumps(body) + "\n"
 
-    files = {'file': ('report.csv', rawData)}
-    response = requests.request(
-        "POST", url, headers={"X-Auth-Token": "s2s.9n9htsciluk9ouvvh97n2q.bz5h9xodjdl25ajx6bise6"}, files=files)
+        files = {'file': ('report.csv', rawData)}
+        response = requests.request(
+            "POST", url, headers={"X-Auth-Token": "s2s.9n9htsciluk9ouvvh97n2q.bz5h9xodjdl25ajx6bise6"}, files=files)
+        print(response.json())
+        if (response.status_code != 200):
+            raise Exception("Error while load data")
 
-    print(response.json())
-    if (response.status_code != 200):
-        raise Exception("Error while load data")
     return
 
 
