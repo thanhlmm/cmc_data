@@ -18,7 +18,7 @@ def extractCoinInfo():
     coin_infos = []
     # TODO: Make the query parallel
     for page in range(1, 100):
-        url = f"https://data.messari.io/api/v2/assets?page={page}&limit=500&fields=id,slug,symbol,metrics/market_data/price_usd,metrics/market_data/ohlcv_last_1_hour"
+        url = f"https://data.messari.io/api/v2/assets?page={page}&limit=500&fields=id,name,slug,symbol,metrics/market_data/price_usd,metrics/market_data/ohlcv_last_1_hour"
         response = requests.request("GET", url)
         print("Done query: "+url)
         if (response.status_code != 200):
